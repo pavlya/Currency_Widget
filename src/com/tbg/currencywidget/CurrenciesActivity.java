@@ -1,11 +1,5 @@
 package com.tbg.currencywidget;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
-import org.jraf.android.backport.switchwidget.Switch;
-
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -19,12 +13,11 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -44,6 +37,7 @@ import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
@@ -58,9 +52,17 @@ import com.tbg.currencywidget.data.CurrenciesRatesTable;
 import com.tbg.currencywidget.data.CurrenciesTable;
 import com.tbg.currencywidget.widget.CurrencyWidget;
 
-public class CurrenciesActivity extends FragmentActivity implements
-		LoaderManager.LoaderCallbacks<Cursor>, OnClickListener,
-		OnItemClickListener {
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+//public class CurrenciesActivity extends FragmentActivity implements
+//		LoaderManager.LoaderCallbacks<Cursor>, OnClickListener,
+//		OnItemClickListener
+		public class CurrenciesActivity extends FragmentActivity implements
+		LoaderCallbacks<Cursor>, OnClickListener,
+		OnItemClickListener
+		{
 
 	private static final int USD_POSITION = 82;
 	private static final int ACTIVITY_LOADER_ID = 197;
@@ -314,9 +316,9 @@ public class CurrenciesActivity extends FragmentActivity implements
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view,
 					int position, long arg3) {
-				String text = "You clicked " + intervalNames[position]
-						+ " it is " + intervalValues[position];
-				Utils.showShortToast(text, getApplicationContext());
+//				String text = "You clicked " + intervalNames[position]
+//						+ " it is " + intervalValues[position];
+//				Utils.showShortToast(text, getApplicationContext());
 				// save them to shared prefs
 				SharedPreferences sharedPrefs = getSharedPreferences(
 						ConverterAppConstants.WIDGET_PREF, MODE_PRIVATE);
@@ -343,7 +345,6 @@ public class CurrenciesActivity extends FragmentActivity implements
 		return super.onContextItemSelected(item);
 	}
 
-	@Override
 	public void onLoadFinished(
 			android.support.v4.content.Loader<Cursor> loader, Cursor cursor) {
 		switch (loader.getId()) {
@@ -485,7 +486,7 @@ public class CurrenciesActivity extends FragmentActivity implements
 	/**
 	 * get the values from currency spinners and save them to shared preferences
 	 * 
-	 * @param widgetID
+	 * @param
 	 * @return
 	 */
 	private SharedPreferences saveValuesToSharedPrefs(long fromPosition,
@@ -498,6 +499,8 @@ public class CurrenciesActivity extends FragmentActivity implements
 		String fromCurrencyString = etFrom.getText().toString()
 				.replace(",", ".");
 		String toCurrencyString = etTo.getText().toString().replace(",", ".");
+        // check if there is another weird symbols
+        toCurrencyString = toCurrencyString.replace("∞", ".");
 		// get the amount of converted money "from" field
 		float fromCurrencyAmount = (fromCurrencyString.length() > 0) ? Float
 				.valueOf(fromCurrencyString) : 1;
@@ -552,7 +555,7 @@ public class CurrenciesActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * Test tabbed Dialog
+	 * Tabbed Dialog with currencies rates
 	 */
 	private void showTabbedDialog(final int from) {
 
@@ -584,11 +587,11 @@ public class CurrenciesActivity extends FragmentActivity implements
 		tabs.setup();
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 
-			@Override
-			public void onTabChanged(String tabId) {
-				selectedTabIndex = tabs.getCurrentTab();
-			}
-		});
+            @Override
+            public void onTabChanged(String tabId) {
+                selectedTabIndex = tabs.getCurrentTab();
+            }
+        });
 
 		TabHost.TabSpec favoritesTab = tabs.newTabSpec("one");
 		favoritesTab.setContent(R.id.lv_tab_favorites);
@@ -600,17 +603,18 @@ public class CurrenciesActivity extends FragmentActivity implements
 		mDialogCursorAdapter.setFilterQueryProvider(filter);
 		lv.setAdapter(mDialogCursorAdapter);
 		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				setCurrencyValueAccordingToDialog(from, id);
-				// restart loaders when dialog closed
-				getSupportLoaderManager().restartLoader(ACTIVITY_LOADER_ID,
-						null, CurrenciesActivity.this);
-				updateValuesOnDialogClosed();
-				dialog.dismiss();
-			}
-		});
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                setCurrencyValueAccordingToDialog(from, id);
+                // restart loaders when dialog closed
+                getSupportLoaderManager().restartLoader(ACTIVITY_LOADER_ID,
+                        null, CurrenciesActivity.this);
+                updateValuesOnDialogClosed();
+
+                dialog.dismiss();
+            }
+        });
 
 		TabHost.TabSpec allTabs = tabs.newTabSpec("two");
 		allTabs.setContent(R.id.lv_tab_all);
@@ -631,6 +635,7 @@ public class CurrenciesActivity extends FragmentActivity implements
 				ViewGroup group = (ViewGroup) ((ViewGroup) view).getChildAt(0); // nested
 																				// group
 				Switch sw = (Switch) group.getChildAt(1); // index of switch
+//				SwitchCompat sw = (SwitchCompat) group.getChildAt(1); // index of switch
 				int answer = CurrenciesAdapter.getValueOfCheckbox(sw, (int) id);
 				if (answer == 0) {
 					CurrenciesAdapter.updateFavoriteValue(

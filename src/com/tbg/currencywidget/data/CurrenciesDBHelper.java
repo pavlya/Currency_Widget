@@ -1,16 +1,15 @@
 package com.tbg.currencywidget.data;
 
-import java.util.Arrays;
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.tbg.currencywidget.Logger;
 import com.tbg.currencywidget.R;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CurrenciesDBHelper extends SQLiteOpenHelper {
 

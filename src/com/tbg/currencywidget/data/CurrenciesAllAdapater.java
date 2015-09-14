@@ -1,16 +1,13 @@
 package com.tbg.currencywidget.data;
 
-import org.jraf.android.backport.switchwidget.Switch;
-
-import com.tbg.currencywidget.R;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.opengl.Visibility;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tbg.currencywidget.R;
 
 public class CurrenciesAllAdapater extends CurrenciesAdapter {
 
@@ -42,8 +39,9 @@ public class CurrenciesAllAdapater extends CurrenciesAdapter {
 		ImageView ivIcon = (ImageView) view.findViewById(R.id.iv_icon_currency);
 		ivIcon.setImageDrawable(getCurrencyDrawable(context, currAbbreviation));
 
-		Switch cbFavorites = (Switch) view.findViewById(R.id.cb_favorite);
-		cbFavorites.setVisibility(View.INVISIBLE);
+//		Switch cbFavorites = (Switch) view.findViewById(R.id.cb_favorite);
+//		Switch
+//		cbFavorites.setVisibility(View.INVISIBLE);
 	}
 
 }

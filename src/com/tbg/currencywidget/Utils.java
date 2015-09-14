@@ -1,9 +1,5 @@
 package com.tbg.currencywidget;
 
-import static com.tbg.currencywidget.ConverterAppConstants.LOG_TAG;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -12,6 +8,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+import static com.tbg.currencywidget.ConverterAppConstants.LOG_TAG;
 
 public class Utils {
 

@@ -1,14 +1,5 @@
 package com.tbg.currencywidget.widget;
 
-import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_FROM_TEXT;
-import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_PREF;
-import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_TO_TEXT;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.Locale;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -31,6 +22,15 @@ import com.tbg.currencywidget.RatesLoader;
 import com.tbg.currencywidget.Utils;
 import com.tbg.currencywidget.data.CurrenciesRatesContentProvider;
 import com.tbg.currencywidget.data.CurrenciesRatesTable;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.Locale;
+
+import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_FROM_TEXT;
+import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_PREF;
+import static com.tbg.currencywidget.ConverterAppConstants.WIDGET_TO_TEXT;
 
 public class CurrencyWidget extends AppWidgetProvider {
 

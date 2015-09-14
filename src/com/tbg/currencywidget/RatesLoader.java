@@ -1,24 +1,5 @@
 package com.tbg.currencywidget;
 
-import static com.tbg.currencywidget.ConverterAppConstants.LOG_TAG;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -31,6 +12,26 @@ import android.util.Log;
 
 import com.tbg.currencywidget.data.CurrenciesRatesContentProvider;
 import com.tbg.currencywidget.data.CurrenciesRatesTable;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Calendar;
+
+import static com.tbg.currencywidget.ConverterAppConstants.LOG_TAG;
 
 /**
  * Load Currency Rates from Database if there is now rates, loads rates from
@@ -300,6 +301,21 @@ public class RatesLoader extends Application {
 				toCurr = params[1];
 				int message = 0;
 				double response = -1d;
+				try{
+					response = getCurrencyRatesFromYahoo(fromCurr, toCurr);
+					if(response > 0){
+						return response;
+					}
+				}catch (ClientProtocolException e){
+					Log.d(LOG_TAG, e.getMessage());
+					sendBroadcast(message);
+				} catch (IOException e) {
+					e.printStackTrace();
+					message = ConverterAppConstants.IO_EXCEPTION;
+					Log.d(LOG_TAG, e.getMessage());
+					// TODO broadcast no internet message or something like this
+					sendBroadcast(message);
+				}
 				try {
 					response = getCurrencyJsonRE(params[0], params[1]);
 				} catch (ClientProtocolException e) {
@@ -383,6 +399,26 @@ public class RatesLoader extends Application {
 			this.rowID = id;
 		}
 
+	}
+
+	private double getCurrencyRatesFromYahoo(String fromCurr, String toCurr) throws IOException {
+		// create for calling to yahoo api
+		String urlString = ConverterAppConstants.startUrlYahoo+fromCurr+toCurr+ConverterAppConstants.endUrlYahoo;
+		URL url = new URL(urlString);
+		URLConnection connection = url.openConnection();
+		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String result= "";
+		String inputLine;
+		while((inputLine = br.readLine()) != null){
+			System.out.println(inputLine);
+			result+= inputLine;
+		}
+		// split response
+		String[] output = result.split(",");
+		// the rates are the second value in CSV
+		String ratesOutput = output[1];
+
+		return Double.valueOf(ratesOutput);
 	}
 
 	/**

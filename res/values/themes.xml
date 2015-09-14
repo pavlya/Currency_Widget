@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme" parent="@android:style/Theme">
-        <item name="switchStyle">@style/Widget.Holo.CompoundButton.Switch</item>
+       <!--  <item name="switchStyle">@style/Widget.Holo.CompoundButton.Switch</item>  -->
     </style>
 
 </resources>
